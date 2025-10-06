@@ -1,0 +1,26 @@
+{
+  "name": "carbonchain-deploy",
+  "version": "1.0.0",
+  "description": "CarbonChain - Blue Carbon Registry Platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd backend && python main.py",
+    "dev": "concurrently \"cd backend && python main.py\" \"cd frontend && npm start\"",
+    "build": "cd frontend && npm run build",
+    "install-deps": "cd backend && pip install -r requirements.txt && cd ../frontend && npm install",
+    "deploy": "npm run build"
+  },
+  "keywords": [
+    "carbon-credits",
+    "blockchain",
+    "aptos",
+    "blue-carbon",
+    "mangrove",
+    "climate"
+  ],
+  "author": "CarbonChain Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
