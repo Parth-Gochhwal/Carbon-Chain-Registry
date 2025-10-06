@@ -1,41 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const ImpactDashboard = ({ projectData }) => {
   const [dashboardData, setDashboardData] = useState(null);
   const [portfolioValue, setPortfolioValue] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchDashboardData();
-    fetchPortfolioValue();
-    const interval = setInterval(fetchPortfolioValue, 5000); // Update every 5 seconds
-    return () => clearInterval(interval);
-  }, [projectData]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async (projectId) => {
     try {
-      const response = await axios.get(`/api/dashboard/${projectData.projectId}`);
+      const response = await axios.get(`/api/dashboard/${projectId}`);
       setDashboardData(response.data);
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err);
+      setError('Could not load dashboard data.');
     }
-  };
+  }, []);
 
-  const fetchPortfolioValue = async () => {
+  const fetchPortfolioValue = useCallback(async (tokenData) => {
     try {
-      if (projectData?.tokenization?.carbon_credit?.total_credits) {
-        const response = await axios.get(`/api/marketplace/portfolio-value/${projectData.tokenization.carbon_credit.total_credits}`);
+      if (tokenData?.carbon_credit?.total_credits) {
+        const response = await axios.get(`/api/marketplace/portfolio-value/${tokenData.carbon_credit.total_credits}`);
         if (response.data.success) {
           setPortfolioValue(response.data.portfolio);
         }
       }
-    } catch (error) {
-      console.error('Error fetching portfolio value:', error);
+    } catch (err) {
+      console.error('Error fetching portfolio value:', err);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (projectData) {
+      setLoading(true);
+      setError(null);
+      
+      const projectId = projectData.projectId;
+      const tokenizationData = projectData.tokenization;
+
+      fetchDashboardData(projectId).finally(() => setLoading(false));
+      fetchPortfolioValue(tokenizationData);
+
+      const interval = setInterval(() => fetchPortfolioValue(tokenizationData), 5000);
+      return () => clearInterval(interval);
+    } else {
+        setLoading(false);
+    }
+  }, [projectData, fetchDashboardData, fetchPortfolioValue]);
+
+  if (!projectData) {
+    return (
+      <div className="card">
+        <div className="loading">
+          <p>Please select a project to view the dashboard.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -47,6 +68,16 @@ const ImpactDashboard = ({ projectData }) => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="card">
+        <div className="error">
+          <p>⚠ {error}</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="card">
       <h2>📊 Real-Time Impact Dashboard</h2>
