@@ -107,3 +107,6 @@ uploads/
 
 # Deployment
 windsurf_deployment.yaml
+
+# Local Netlify folder
+.netlify
