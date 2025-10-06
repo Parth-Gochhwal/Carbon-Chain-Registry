@@ -15,7 +15,6 @@ const InitialAssessment = ({ onComplete }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState(null);
-  const [projectId, setProjectId] = useState(null);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -41,7 +40,6 @@ const InitialAssessment = ({ onComplete }) => {
 
       const projectResponse = await axios.post('/api/projects', projectFormData);
       const newProjectId = projectResponse.data.id;
-      setProjectId(newProjectId);
 
       // Upload and analyze image if provided
       if (selectedFile) {

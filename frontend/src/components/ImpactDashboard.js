@@ -11,7 +11,7 @@ const ImpactDashboard = ({ projectData }) => {
     fetchPortfolioValue();
     const interval = setInterval(fetchPortfolioValue, 5000); // Update every 5 seconds
     return () => clearInterval(interval);
-  }, [projectData]);
+  }, [projectData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchDashboardData = async () => {
     try {

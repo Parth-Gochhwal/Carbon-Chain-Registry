@@ -46,7 +46,7 @@ const VerificationSteps = ({ projectData, onComplete }) => {
     if (projectData?.projectId) {
       fetchVerifications();
     }
-  }, [projectData]);
+  }, [projectData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchVerifications = async () => {
     try {
