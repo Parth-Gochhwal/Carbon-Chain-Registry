@@ -34,7 +34,7 @@ class AptosBlockchainService:
         self.account = self._load_or_create_account()
         self.module_address = self.account.address()
         
-    def _load_or_create_account(self) -> Account:
+    def _load_or_create_account(self) -> 'Account':
         """Load existing account or create new one"""
         private_key = os.getenv("APTOS_PRIVATE_KEY")
         
