@@ -21,7 +21,6 @@ aiofiles==23.2.1
 pillow==10.1.0
 
 # HTTP client
-httpx==0.24.1
 requests==2.31.0
 
 # Date/time
